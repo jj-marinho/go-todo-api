@@ -3,6 +3,7 @@ package routes
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-basic-api/controllers"
+	"github.com/go-basic-api/middlewares"
 )
 
 func SetupRouter() *gin.Engine {
@@ -13,9 +14,13 @@ func SetupRouter() *gin.Engine {
 	{
 		todo.GET("", controllers.GetAllTodos)
 		todo.POST("", controllers.CreateTodo)
-		todo.GET("/:id", controllers.GetTodo)
-		todo.PUT("/:id", controllers.UpdateTodo)
-		todo.DELETE("/:id", controllers.DeleteTodo)
+
+		idRoutes := todo.Group("/", middlewares.ValidateMongoId())
+		{
+			idRoutes.GET(":id", controllers.GetTodo)
+			idRoutes.PUT(":id", controllers.UpdateTodo)
+			idRoutes.DELETE(":id", controllers.DeleteTodo)
+		}
 	}
 
 	return router

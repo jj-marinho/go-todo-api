@@ -1,8 +1,6 @@
 package models
 
 import (
-	"errors"
-
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -47,11 +45,6 @@ func CreateTodo(todo *Todo) error {
 }
 
 func GetTodo(id string) (*Todo, error) {
-	idIsValid := bson.IsObjectIdHex(id)
-	if !idIsValid {
-		return nil, errors.New("Invalid Id")
-	}
-
 	sess := S.Session.Copy()
 	defer sess.Close()
 
@@ -67,11 +60,6 @@ func GetTodo(id string) (*Todo, error) {
 }
 
 func UpdateTodo(id string, new_todo *Todo) error {
-	idIsValid := bson.IsObjectIdHex(id)
-	if !idIsValid {
-		return errors.New("Invalid Id")
-	}
-
 	sess := S.Session.Copy()
 	defer sess.Close()
 
@@ -85,11 +73,6 @@ func UpdateTodo(id string, new_todo *Todo) error {
 }
 
 func DeleteTodo(id string) error {
-	idIsValid := bson.IsObjectIdHex(id)
-	if !idIsValid {
-		return errors.New("Invalid Id")
-	}
-
 	sess := S.Session.Copy()
 	defer sess.Close()
 

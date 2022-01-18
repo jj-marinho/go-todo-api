@@ -29,7 +29,6 @@ func CreateTodo(c *gin.Context) {
 
 	err = models.CreateTodo(&todo)
 	if err != nil {
-		println(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
@@ -42,7 +41,6 @@ func GetTodo(c *gin.Context) {
 
 	todo, err := models.GetTodo(id)
 	if err != nil {
-		println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
@@ -59,6 +57,7 @@ func UpdateTodo(c *gin.Context) {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+
 	todo.Id = bson.ObjectIdHex(id)
 
 	err = models.UpdateTodo(id, &todo)
