@@ -2,14 +2,18 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-basic-api/models"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func GetAllTodos(c *gin.Context) {
-	todos := models.GetAllTodos()
+	todos, err := models.GetAllTodos()
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 
 	c.JSON(http.StatusOK, todos)
 }
@@ -23,20 +27,23 @@ func CreateTodo(c *gin.Context) {
 		return
 	}
 
-	models.CreateTodo(&todo)
-	c.JSON(http.StatusOK, todo)
-}
-
-func GetTodo(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	err = models.CreateTodo(&todo)
 	if err != nil {
+		println(err.Error())
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 
+	c.Writer.WriteHeader(http.StatusOK)
+}
+
+func GetTodo(c *gin.Context) {
+	id := c.Param("id")
+
 	todo, err := models.GetTodo(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
+		println(err.Error())
+		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 
@@ -44,18 +51,15 @@ func GetTodo(c *gin.Context) {
 }
 
 func UpdateTodo(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+	id := c.Param("id")
 
 	var todo models.Todo
-	err = c.BindJSON(&todo)
+	err := c.BindJSON(&todo)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
+	todo.Id = bson.ObjectIdHex(id)
 
 	err = models.UpdateTodo(id, &todo)
 	if err != nil {
@@ -63,17 +67,13 @@ func UpdateTodo(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, todo)
+	c.Writer.WriteHeader(http.StatusOK)
 }
 
 func DeleteTodo(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		c.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
+	id := c.Param("id")
 
-	models.DeleteTodo(id)
+	err := models.DeleteTodo(id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusBadRequest)
 		return
