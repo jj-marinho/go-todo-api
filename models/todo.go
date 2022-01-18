@@ -1,6 +1,13 @@
 package models
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/go-basic-api/config"
+	"gopkg.in/mgo.v2"
+)
+
+var M *mgo.Session = config.Mongo
 
 type Todo struct {
 	Id          int    `json:"id"`
