@@ -4,6 +4,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+// todoC holds the collection name
 var todoC = "todos"
 
 type Todo struct {

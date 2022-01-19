@@ -7,6 +7,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+/*
+	ValidateMongoId is a middleware used on routes ending in /:id
+	It basically checks if the :id param is valid,
+	otherwise it aborts with an error
+*/
 func ValidateMongoId() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")

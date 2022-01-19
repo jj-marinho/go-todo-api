@@ -6,6 +6,7 @@ import (
 	"github.com/go-basic-api/middlewares"
 )
 
+// Start all current routes available on API
 func SetupRouter() *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger(), gin.Recovery())
@@ -15,6 +16,7 @@ func SetupRouter() *gin.Engine {
 		todo.GET("", controllers.GetAllTodos)
 		todo.POST("", controllers.CreateTodo)
 
+		// Routes with id parameter need custom validation middleware
 		idRoutes := todo.Group("/", middlewares.ValidateMongoId())
 		{
 			idRoutes.GET(":id", controllers.GetTodo)
